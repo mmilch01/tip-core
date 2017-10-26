@@ -1,0 +1,11 @@
+
+<script type="text/javascript" src="$content.getURI("scripts/tip/tipProjectList.js")"></script>
+<div id="tip_projects_list">
+
+</div>
+<script type="text/javascript">
+    window.projList=new MinProjectsList("tip_projects_list");
+    window.projList.init();
+//    window.projList2=new MinProjectsList("tip_projects_list",{ accessible: false });
+//    window.projList2.init();
+</script>

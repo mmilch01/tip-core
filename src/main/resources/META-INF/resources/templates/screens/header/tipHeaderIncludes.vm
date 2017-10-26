@@ -1,0 +1,2 @@
+<!-- custom TIP styles. Can overwrite any other header stylesheet -->
+<link rel="stylesheet" type="text/css" href="$content.getURI("style/tip.css")" />

@@ -1,0 +1,19 @@
+<!-- Sequence: 10 -->
+<!-- Upload/Default -->
+#if($data.getSession().getAttribute("user").checkRole("Fellow"))
+
+#else
+<li><a href="#!" class="nolink">Images</a>
+    <ul>
+        <!-- Sequence: 10 -->
+        <!-- Images -->
+        <li><a href="$link.setPage("UploadOptions.vm")">All Upload Options</a>
+        <li><a href="$link.setPage("UploadAssistantPage.vm")">Upload Assistant</a></li>
+        <li><a href="$link.setPage("CompressedUploaderPage.vm")">Compressed Uploader</a></li>
+        <li><a href="$link.setPage("DICOMSCPPage.vm")">DICOM SCP</a></li>
+    </ul>
+</li>
+<li><a href="$link.setPage("XMLUpload.vm")">XML</a></li>
+<li><a href="$link.setPage("XDATScreen_uploadCSV.vm")">Spreadsheet</a></li>
+#end
+<li><a href="$link.setPage("XDATScreen_prearchives.vm")">Go to prearchive</a></li>

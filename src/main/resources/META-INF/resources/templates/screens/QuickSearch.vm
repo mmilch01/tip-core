@@ -1,0 +1,64 @@
+<!-- QuickSearch -->
+<script src="/scripts/tip/tipWorkflowDisplay.js"></script>
+
+<h2>Patients with Active Workflows</h2>
+<div id="activeWorkflows" class="report-info-block" style="margin-bottom: 4em;">
+    <table width="100%">
+        <thead>
+        <tr>
+            <th>$displayManager.getSingularDisplayNameForSubject() Name</th>
+            <th>Active $displayManager.getSingularDisplayNameForMRSession()</th>
+            <th>$displayManager.getSingularDisplayNameForMRSession() Date</th>
+            <th>Project</th></th>
+            <th>Processing Log</th>
+            <th>Output to PACS</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        </tbody>
+    </table>
+
+    <form id="setActivePatientForm">
+        <input type="hidden" name="xnat:experimentData/fields/field[name=activeintip]/field" value="false" />
+    </form>
+</div>
+
+#if($siteConfig.getProperty("tipStatusSearchId","")!="undefined")
+    #set($tipStatusSearchId = $siteConfig.getProperty("tipStatusSearchId",""))
+<script type="text/javascript">
+    TIP.workflowDisplay("$tipStatusSearchId","activeWorkflows");
+</script>
+#end
+
+
+<h2>Site Summary</h2>
+<div class="message">
+    <p>
+        $!systemName currently contains $proj_count $displayManager.getPluralDisplayNameForProject().toLowerCase(),
+        $sub_count $displayManager.getPluralDisplayNameForSubject().toLowerCase(),
+        and $isd_count imaging $displayManager.getPluralDisplayNameForImageSession().toLowerCase().
+    </p>
+</div>
+<table id="splash_table" width="100%" cellpadding="0" cellspacing="0">
+    <tr>
+        <td width="" valign="top">
+            <div id="projectsContainer" class="container">
+                <div class="withColor containerTitle"><span style="float:right;">$displayManager.getSingularDisplayNameForProject() Access</span> $displayManager.getPluralDisplayNameForProject()</div>
+                <div id="projectsBody" class="containerBody">
+                    #parse("/screens/tipProjectList.vm")
+                </div>
+            </div>
+        </td>
+        <td width="10">&nbsp;</td>
+        <td width="" valign="top">
+            <div id="dataContainer" class="container" style="min-width: 340px;">
+                <div class="withColor containerTitle">Recent Data Activity</div>
+                <div id="dataBody" class="containerBody">
+                    #parse("/screens/recentExptList.vm")
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+<!-- /QuickSearch -->

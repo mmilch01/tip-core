@@ -1,0 +1,109 @@
+<!-- ACTIVE PROCESSES -->
+<div id="workflow_messages"  style="display:none;">
+	#set($hasActiveProcess = false)
+	<!-- Active Processes -->
+
+	#foreach( $workflow in $om.getWorkflows() )
+		#if($workflow.isActive())
+			#set($hasActiveProcess = true)
+			<div class="message" id="$workflow.getWorkflowId()">
+				<strong>Active Workflow: $workflow.getOnlyPipelineName() $!workflow.getStatus()</strong>
+				#if($!workflow.getPercentagecomplete())
+                    <span class="sep"></span> $!workflow.getPercentagecomplete()
+				#end
+				<span class="sep"></span> Start Time: $!workflow.getLaunchTime()
+				<span class="sep"></span> <a class="report-link btn2 btn-sm" title="alt-click to view info on a separate page" data-args="$workflow.getWorkflowId()|wrk:workflowData|wrk:workflowData.wrk_workflowData_id">View Details</a>
+				#if($turbineUtils.isSiteAdmin($user))
+					<span class="sep"></span> <a onclick="dismissNotification('$workflow.getWorkflowId()', 'Failed')" class="btn1 btn-sm">Mark as Failed</a>
+				#end
+			</div>
+		#end
+	#end
+
+<!-- PROCESSING ERRORS -->
+	#set($hasErrorProcess = false)
+	<!-- Processing Exception -->
+	#set ($completed = [])
+
+	#foreach( $workflow in $om.getWorkflows() )
+		#if($workflow.getStatus()=="Complete")
+			#set($added = $completed.add($workflow.getOnlyPipelineName()))
+		#end
+		#if($workflow.getStatus()=="Error" || $workflow.getStatus()=="Failed")
+			#if(!$completed.contains($workflow.getOnlyPipelineName()))
+				#set($hasErrorProcess = true)
+				<div class="error">
+					<strong>PROCESSING EXCEPTION: $workflow.getOnlyPipelineName() $!workflow.getStatus()</strong>
+					#if($!workflow.getPercentagecomplete())
+                        <span class="sep"></span> $!workflow.getPercentagecomplete()
+					#end
+					<span class="sep"></span> Start Time: $!workflow.getLaunchTime()
+					#if($turbineUtils.isSiteAdmin($user))
+						<span class="sep"></span> <a onclick="dismissNotification('$workflow.getWorkflowId()', 'Failed (Dismissed)')">[Dismiss]</a>
+					#end
+				</div>
+			#end
+		#end
+	#end
+
+</div>
+
+#if($hasActiveProcess || $hasErrorProcess)
+<script type="text/javascript">
+    document.getElementById("workflow_messages").style.display = 'block';
+</script>
+#end
+
+<script type="text/javascript">
+	function dismissNotification(id, st){
+
+        function workflowUpdate() {
+
+            xmodal.loading.open('Please wait...');
+
+            function workflowUpdateOK(data, status, o) {
+				xmodal.loading.close();
+				xmodal.message('Success', 'Successfully updated workflow status to "<b>' + st + '</b>".', {
+                action: function () {
+                	document.location.reload(true)
+                }
+            });
+
+            console.log('Status: ' + status);
+			}
+
+            function workflowUpdateFailed(o, status, error) {
+				xmodal.loading.close();
+				xmodal.message('Error', 'An unexpected error has occurred. Please contact your administrator.');
+				console.log('Status: ' + status + '. Error: ' + error);
+            }
+            var params = [];
+            params.push('wrk:workflowData/status=' + st);
+            params.push('XNAT_CSRF=' + csrfToken);
+            params.push('XNAT_XHR=' + Date.now());
+            var url = serverRoot + '/data/workflows/' + id + '?' + params.join('&');
+
+			jQuery.ajax({
+				type: 'PUT',
+                url: encodeURI(url),
+                success: workflowUpdateOK,
+                error: workflowUpdateFailed
+        	});
+        }
+
+        var confirmation_message =
+                '<p>Are you sure you want to change the status of this ' +
+                'workflow to "<b>' + st + '</b>"?</p>' +
+				'<div class="message" style="margin-top:20px;"><b>Note:</b> ' +
+				'This will not affect the actual pipeline. If the pipeline ' +
+				'is still running, it may change the status.</div>';
+
+        xmodal.confirm({
+            content: confirmation_message,
+			okAction: workflowUpdate,
+			cancelAction: function(){ return },
+			width: 420,
+			height: 240
+        });
+	};
+</script>

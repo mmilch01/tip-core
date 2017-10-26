@@ -1,0 +1,196 @@
+<script type="text/javascript" src="$content.getURI("scripts/tip/qcImageSlider.js")"></script>
+
+<tr id="tip_status">
+    <td style="padding-bottom: 1em;">
+        <h3>TIP Status: <span id="tipStatusDisplay"></span>
+            #if($user.canEdit($item))
+                #if($user.checkRole("Fellow"))
+
+                #else
+                    <span style="margin-left: 10px;">
+                        <button id="tipStatusButton" class="btn btn-xs" onclick="TIP.setStatus(this,'setStatusForm')" data-currentStatus="" data-projectId="$project" data-subjectId="$subject.getId()" data-sessionId="$om.getId()">
+                            <span class="icon icon-xs icon-check-blue"></span> Set TIP Status
+                        </button>
+                    </span>
+                #end
+            #end
+        </h3>
+        <form id="setStatusForm">
+            <input type="hidden" name="xnat:experimentData/fields/field[name=activeintip]/field" id="tipStatusField" value="true" />
+        </form>
+    </td>
+</tr>
+<tr id="tip_qc_resource_summary" style="display: none;" >
+    <td class="report-info-block">
+        <h3>Processing History</h3>
+        <table>
+            <thead>
+            <tr>
+                <th>Processing Output</th>
+                <th>Last Modified</th>
+                <th>QC Status</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+        <div id="rsn_qc_launcher"></div>
+        <div id="fs_qc_launcher"></div>
+    </td>
+</tr>
+
+<script src="/scripts/tip/tipStatus.js"></script>
+<script>
+    var sessionLabel = "$!item.getProperty('label')";
+    var sessionId = "$om.getId()";
+
+    function insertQcRow(rowData,workflowId) {
+        row = '<tr id="'+ workflowId + '"><td>' + rowData.assessorName + '</td>';
+        row += '<td>'+ rowData.assessorDate +'</td>';
+        row += '<td>'+ rowData.action + '</td></tr>';
+        jq('#tip_qc_resource_summary').find('table').find('tbody').append(row);
+    }
+
+    jq.get("/data/archive/experiments/"+sessionId+"?format=json")
+        .success(function(data){
+            var sessionChildren = data.items[0].children, resources = [], assessors = [], fields=[], assessorId, assessorDate, assessorChildren, assessorName, assessorQc, row, tipStatus, tipStatusNotes, qcItems = [], qcObjects = {};
+
+            for (i=0,j=sessionChildren.length; i<j; i++) {
+                if (sessionChildren[i].field === "resources/resource") {
+                    resources = sessionChildren[i].items;
+                }
+                if (sessionChildren[i].field === "assessors/assessor") {
+                    assessors = sessionChildren[i].items;
+                }
+                if (sessionChildren[i].field === "fields/field") {
+                    fields = sessionChildren[i].items;
+                }
+            }
+
+            // set TIP status
+            tipStatus = null; tipStatusNotes = null;
+            for (i=0, j=fields.length; i<j; i++) {
+                if (fields[i].data_fields.name === "activeintip") {
+                    tipStatus = fields[i].data_fields.field;
+                    var tipStatusDisplay = (tipStatus === 'true') ? "Active" : "Not Active";
+                    jq('#tipStatusDisplay').html(tipStatusDisplay);
+                    jq('#tipStatusButton').data('currentstatus',tipStatusDisplay);
+                    if (tipStatus === "true") {
+                        jq('#tipStatusField').val('false');
+                        jq('#tip_status').find('button').html('<span class="icon icon-xs icon-check-blue"></span> Mark Session as Complete');
+                    } else {
+                        jq('#tipStatusField').val('true');
+                        jq('#tip_status').find('button').html('<span class="icon icon-xs icon-add"></span>Add Session to Active Queue');
+                    }
+                }
+                if (fields[i].data_fields.name === "tipstatusnotes") {
+                    // if this field is returned in JSON results, it means that there is a value to display.
+                    tipStatusNotes = fields[i].data_fields.field;
+                    jq('tr#tip_status').find('h3').after('<p><strong>TIP Status Notes: </strong>'+tipStatusNotes+'</p>');
+                }
+            }
+
+            // if output is stored as a resource, find it here.
+            for (i=0, j=resources.length; i<j; i++){
+                if (resources[i].data_fields.label === "BENICE") {
+                    var resourceDate = new Date(resources[i].meta.start_date).toISOString().substr(0,10);
+                    resourceDate += " " + new Date(resources[i].meta.start_date).toTimeString().substr(0,12);
+
+                    var resourceId = resources[i].data_fields.xnat_abstractresource_id;
+
+                    var resourceAction = '<button onclick="beniceModal(\''+resourceId+'\')" class="btn btn-sm">Review RSN QC</button>';
+
+                    // add workflow ID to qcItems array, then add an object of qc info to the qcObjects array;
+                    // qcObjects = workflowId: { assessorName: '', assessorDate: '', action: '' }
+                    var workflowId = resources[i].meta.create_event_id;
+
+                    qcItems.push(workflowId);
+                    qcObjects[workflowId] = {
+                        assessorName: 'RSN Gen',
+                        assessorDate: resourceDate,
+                        action: resourceAction
+                    }
+                }
+            }
+                // if BENICE output or FS output is stored as an assessor, find it here.
+            for (i=0, j=assessors.length; i<j; i++) {
+                if (assessors[i].meta['xsi:type'] === "tip:beniceQc" || assessors[i].data_fields.fs_version) {
+                    assessorChildren = assessors[i].children;
+                    assessorId = assessors[i].data_fields.id;
+                    assessorDate = new Date(assessors[i].meta.start_date).toISOString().substr(0,10);
+                    assessorDate += " " + new Date(assessors[i].meta.start_date).toTimeString().substr(0,12);
+
+                    assessorName = (assessors[i].meta['xsi:type'] === "tip:beniceQc") ? "RSN" : "FreeSurfer";
+
+                    // find qc assessor, if it exists
+                    assessorQc = null;
+                    for (var index = 0; index < assessorChildren.length; index++) {
+                        if (assessorChildren[index].field && assessorChildren[index].field === 'validation') {
+                            assessorQc = assessorChildren[index].items[0].data_fields;
+                        }
+                    }
+                    if (!assessorQc) {
+                        var assessorAction = '<button onclick="window.location.assign(\'/data/archive/experiments/' + sessionId + '/assessors/' + assessorId + '\')" class="btn btn-xs">View QC</button>';
+                    } else {
+                        var assessorAction = 'QC: <a href="/data/archive/experiments/' + sessionId + '/assessors/' + assessorId + '">' + assessorQc.status + '</a>';
+                    }
+
+                    // add workflow ID to qcItems array, then add an object of qc info to the qcObjects array;
+                    // qcObjects = workflowId: { assessorName: '', assessorDate: '', action: '' }
+                    var workflowId = assessors[i].meta.create_event_id;
+
+                    qcItems.push(workflowId);
+                    qcObjects[workflowId] = {
+                        assessorName: assessorName,
+                        assessorDate: assessorDate,
+                        action: assessorAction
+                    }
+                }
+
+            }
+
+            // we should now have a list of QC items, identified by workflow ID. Sort in descending order.
+            qcItems.sort(function(a,b){ return b-a });
+
+            for (i=0, j=qcItems.length; i<j; i++) {
+                insertQcRow(qcObjects[qcItems[i]],qcItems[i]); 
+            }
+
+            // only show QC Result link if a QC resource is found.
+            $('#tip_qc_resource_summary').show();
+        });
+
+    function beniceModal(resourceId){
+        xmodal.loading.open({id:'beniceloader'});
+        // first get the data
+        var getReport = jq.ajax({
+            type: 'GET',
+            url: '/data/archive/experiments/'+sessionId+'/resources/'+resourceId+'/files/QC/'+sessionLabel+'_qc.html?format=html'
+        });
+        getReport.done(function(data){
+            xmodal.open({
+                size: 'med', // a 'med' dialog is 60% of the viewport height and width (and flexible)
+                title: 'Review RSN QC',
+                id: 'rsnqcModal',
+                content: data, // 'data' is the returned HTML in this case
+                maximize: true, // displays a 'maximize' button next to the 'close' button
+                okLabel: 'Close', // 'okLabel' is a shortcut for a custom label on a single-button dialog
+                cancel: false, // set to false to prevent rendering (if using button shortcuts)
+                beforeShow: function(obj){
+                    xmodal.loading.close('beniceloader'); // close temporary loading modal
+                }
+            });
+
+            jq('#rsnqcModal .body .inner').find("img").each(function(){
+                var qcurl = '/data/archive/experiments/'+sessionId+'/resources/'+resourceId+'/files/QC/';
+                var imgsrcarray = $(this).prop("src").split("/");
+                var imgurl = imgsrcarray[imgsrcarray.length-1]; // get file name from existing url string
+                jq(this).prop("src",qcurl+imgurl); // fix file paths to be relative to the session resource path
+            });
+
+        });
+    }
+
+
+</script>

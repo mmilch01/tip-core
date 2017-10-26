@@ -1,0 +1,7 @@
+#foreach($bundle in $bundles)
+    #if($bundle.getId().equals("@xnat:mrSessionData"))
+        #set($default_search="$!bundle.getId()")
+    #elseif(($bundle.getId().contains("xnat:mrSessionData") || $bundle.getId().contains("xnat_mrSessionData")) && $default_search.equals(""))
+        #set($default_search="$!bundle.getId()")
+    #end
+#end

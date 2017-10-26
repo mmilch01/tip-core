@@ -1,0 +1,19 @@
+#if($data.getSession().getAttribute("user").checkRole("Fellow"))
+<!-- Sequence: 20 -->
+
+<li id="mainNavData"><a href="#data">Browse Data Types</a>
+    <ul>
+        #addGlobalCustomScreens("topBar/Data")
+    </ul>
+</li>
+
+#else
+<!-- Sequence: 98 -->
+
+<li class="right" id="mainNavData"><a href="#data">Browse Data Types</a>
+    <ul>
+        #addGlobalCustomScreens("topBar/Data")
+    </ul>
+</li>
+
+#end

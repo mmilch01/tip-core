@@ -1,0 +1,11 @@
+#if($user.canEdit($item))
+    #if("$!om.getIlpAge()"!="")
+    <!-- Sequence: 99 -->
+    <!-- BEGIN /templates/screens/xnat_imageSessionData/actionsBox/SendToPacs.vm -->
+        #set($destination = $link.setPage("ExportSessionToPacs.vm").addQueryData("sessionId", $om.getImageSessionData().getId()))
+        <li class="yuimenuitem">
+            <a href="$destination")"><div class="ic">&nbsp;</div><div class="ic_spacer">&nbsp;</div>Send to PACS</a>
+        </li>
+    <!-- END /templates/screens/xnat_imageSessionData/actionsBox/SendToPacs.vm -->
+    #end
+#end

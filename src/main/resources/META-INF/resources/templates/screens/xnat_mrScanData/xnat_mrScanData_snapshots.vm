@@ -1,0 +1,6 @@
+<div id="sessionSnapshotsContainer">
+    #foreach($scan in $om.getSortedScans())
+        #set ($scanID = $!scan.getProperty("ID"))
+
+    #end
+</div>

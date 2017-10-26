@@ -1,0 +1,16 @@
+<!-- Sequence: 98 -->
+<!-- Browse Available Data Types -->
+<script>
+    (function(){
+        // data types are stored in a window-level variable called 'available elements'
+        for (var i=0, j=window.available_elements.length; i<j; i++) {
+            var URI = '/app/template/Search.vm/node/d.' + window.available_elements[i].element_name;
+            var link = '<li><a href="'+URI+'">'+window.available_elements[i].plural+'</a></li>';
+            jq('#mainNavData ul').append(link);
+        }
+
+        // show project menu when complete
+        jq('#mainNavData').show();
+    })();
+</script>
+
