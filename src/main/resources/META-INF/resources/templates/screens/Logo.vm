@@ -1,3 +1,3 @@
 
 ## max image size: 240w x 120h
-<img class="logo_img" src="$content.getURI("images/tip/tip_dev.png")" style="border:none;">
+<img class="logo_img" src="$content.getURI("images/tip/tip_logo_lg.png")" width="225" height="65">
