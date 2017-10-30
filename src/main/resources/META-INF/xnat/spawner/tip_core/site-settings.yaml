@@ -1,0 +1,38 @@
+####
+#### TIP Settings Panels
+####
+
+tipSettingsPanel:
+    kind: panel.form
+    name: tipSettingsPanel
+    label: TIP Settings
+    url: /xapi/siteConfig
+    contentType: json
+    contents:
+        tipStatusSearchId:
+            kind: panel.input.text
+            name: tipStatusSearchId
+            label: Tip Status Search ID
+            description: Enter the ID of the stored search that looks for active image sessions in TIP
+
+#################################################
+####  Root Site Admin Spawner Config Object  ####
+#################################################
+
+siteSettings:
+    kind: tabs
+    name: tipAdminPage
+    label: TIP Site Settings
+    meta:
+        tabGroups:
+            tipAdminTabGroup: TIP Admin
+    contains: tabs
+    tabs:
+        tipAdminTab:
+            kind: tab
+            name: tipAdminTab
+            label: TIP Site Setup
+            group: tipAdminTabGroup
+            active: true
+            contents:
+              ${tipSettingsPanel}

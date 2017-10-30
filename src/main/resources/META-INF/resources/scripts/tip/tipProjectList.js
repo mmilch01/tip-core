@@ -1,5 +1,4 @@
 /*
- * D:/Development/XNAT/1.6/xnat_builder_1_6dev/plugin-resources/webapp/xnat/scripts/project/minProjectsList.js
  * XNAT http://www.xnat.org
  * Copyright (c) 2014, Washington University School of Medicine
  * All Rights Reserved
@@ -120,22 +119,18 @@ function MinProjectsList(_div, _options){
             accessIcon.className = 'project-access';
             var role = p["user_role_"+this.projectResultSet.ResultSet.xdat_user_id];
             if (role.length > 0) {
-                memberIcon = document.createElement("span");
-                memberIcon.className = 'icon icon-md icon-user-' + role;
+                memberIcon = spawn('span.fa.fa-key');
                 accessIcon.appendChild(memberIcon);
                 accessIcon.innerHTML += (' '+role);
             } else {
                 if(p.project_access && p.project_access.toLowerCase()=="public") {
-                    memberIcon = document.createElement("span");
-                    memberIcon.className = 'icon icon-user-guest';
-                    accessIcon.appendChild(memberIcon);
                     accessIcon.innerHTML += (' guest');
                 } else {
                     accessIcon.innerHTML+='<a href="javascript:XNAT.projectAccess.requestAccess(\"'+p.id+'\")"><button class="btn btn-xs">Request access</button></a>';
 
                     + "<a href='" + serverRoot + "/app/template/RequestProjectAccess.vm/project/" + p.id + "'>Request write access</a> to this " + XNAT.app.displayNames.singular.project.toLowerCase() + ".";
 
-                    + "<a href='javascript:XNAT.projectAccess.requestAccess(\""+p.id+"\")'><button class="btn btn-xs">Request access</button></a>";
+                    + "<a href='javascript:XNAT.projectAccess.requestAccess(\""+p.id+"\")'><button class=\"btn btn-xs\">Request access</button></a>";
                 }
             }
             projDisplay.appendChild(accessIcon);

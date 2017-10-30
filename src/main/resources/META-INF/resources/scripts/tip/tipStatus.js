@@ -1,4 +1,4 @@
-if (!TIP) var TIP = {};
+var TIP = getObject(TIP || {});
 
 (function(){
     TIP.setStatus = function(clicked,formID) {
