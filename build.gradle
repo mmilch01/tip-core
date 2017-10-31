@@ -125,10 +125,11 @@ dependencyManagement.imports {
 }
 
 dependencies {
-    compile "org.nrg:framework"
+    implementation "org.nrg.xdat:core"
+    implementation "org.nrg:framework"
     runtime "org.apache.xmlbeans:xmlbeans-xpath"
     runtime "org.springframework:spring-web"
     runtime "io.springfox:springfox-swagger-ui"
-    testCompile "junit:junit"
-    testCompile "org.springframework:spring-test"
+    testImplementation "junit:junit"
+    testImplementation "org.springframework:spring-test"
 }
