@@ -14,7 +14,7 @@
     #addCustomScreens($om.getXSIType() "report/alerts")
     #addCustomScreens($om.getXSIType() "report/errors")
     <table width="100%" style="">
-    #if(!$user.canRead("xnat:subjectData/project","$project.getId()"))
+    #if(!$project.canRead($user))
         <!--can't read data-->
         <tr>
             <td>
