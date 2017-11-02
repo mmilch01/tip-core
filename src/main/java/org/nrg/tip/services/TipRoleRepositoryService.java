@@ -7,7 +7,7 @@
  * Released under the Simplified BSD.
  */
 
-package org.nrg.xnat.services;
+package org.nrg.tip.services;
 
 import org.nrg.framework.utilities.BasicXnatResourceLocator;
 import org.nrg.framework.utilities.Reflection;
