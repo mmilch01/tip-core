@@ -193,15 +193,6 @@ label.disabled { color: #a0a0a0; font-weight: normal; }
 #tip_projects_list .even,
 #tip_projects_list .odd { min-height: 42px; }
 
-.report-info-block table { border-collapse: collapse; border-bottom: 2px solid #ccc; border-top: 1px solid #e7e7e7; margin: 1em 0; min-width: 800px; }
-.report-info-block tr {  }
-.report-info-block tr:nth-child(2n+2) { background-color: #f7f7f7; }
-.report-info-block th { background-color: #f0f0f0; border-bottom: 1px solid #ccc; text-align: left; }
-.report-info-block th,
-.report-info-block td { padding: 6px !important; vertical-align: top; }
-.report-info-block table ul,
-.report-info-block table li { margin-left: inherit; margin-right: inherit; margin-top: 0; margin-bottom: 0; }
-.report-info-block p { margin-bottom: 1em; padding: 0 4px; }
 .report-info-block h1,
 .report-info-block h2,
 .report-info-block h3 { margin: 2em 0 0.5em; }
@@ -212,6 +203,7 @@ label.disabled { color: #a0a0a0; font-weight: normal; }
 .report-info-block .workflowListingDetail p,
 .report-info-block .workflowEntry p { font-size: 11px; text-transform: uppercase; margin-bottom: 4px; }
 .report-info-block .workflowListingDetail h3 { margin: 4px 0; }
+.workflowListingDetail a { font-weight: bold; }
 
 #workflow_messages { margin-bottom: 1em; }
 

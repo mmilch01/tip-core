@@ -13,108 +13,93 @@
 ##    <div id="tp_fm" style="display:none"></div>
     #addCustomScreens($om.getXSIType() "report/alerts")
     #addCustomScreens($om.getXSIType() "report/errors")
-    <table width="100%" style="">
-    #if(!$project.canRead($user))
-        <!--can't read data-->
-        <tr>
-            <td>
-                <h3 class="edit_header1" style="">$!item.getStringProperty("xnat:projectData/name")</h3>
-                #parse($turbineUtils.getTemplateName("_summary_tabs","xnat:projectData",$project.getId()))
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <div class="error">
-                    <h2 style="margin: 0 0 .5em">Security Warning</h2>
-                    <p>
-                        Your account has not been granted access to this $displayManager.getSingularDisplayNameForProject().toLowerCase()'s data.  If you would like to view this data, you will need to request access.
-                        <a href="$link.setPage("RequestProjectAccess.vm").addPathInfo("project","$!{project.getId()}").addPathInfo("popup","$!popup")"><button class="btn btn-xs">Request Access</button></a>
-                    </p>
-                </div>
-            </td>
-        </tr>
+
+    <h2 class="edit_header1" style="">$!item.getStringProperty("xnat:projectData/name")</h2>
+    #if($data.getSession().getAttribute("userHelper").canRead("xnat:subjectData/project","$project.getId()"))
+
+        <script type="text/javascript" src="$content.getURI("scripts/yui/build/resize/resize-beta-min.js")"></script>
+        <script type="text/javascript" src="$content.getURI("scripts/yui/build/layout/layout-beta-min.js")"></script>
+        <script type="text/javascript" src="$content.getURI("scripts/generated/xdat_stored_search.js")"></script>
+        <script type="text/javascript" src="$content.getURI("scripts/generated/xdat_search_field.js")"></script>
+        <script type="text/javascript" src="$content.getURI("scripts/generated/xdat_criteria.js")"></script>
+        <script type="text/javascript" src="$content.getURI("scripts/generated/xdat_criteria_set.js")"></script>
+        <script type="text/javascript" src="$content.getURI("scripts/search/tabManager.js")"></script>
+        <script type="text/javascript" src="$content.getURI("scripts/search/saveSearch.js")"></script>
+        <script type="text/javascript" src="$content.getURI("scripts/search/searchManager.js")"></script>
+        <script type="text/javascript" src="$content.getURI("scripts/search/dataTableSearch.js")"></script>
+        <script type="text/javascript" src="$content.getURI("scripts/search/dataTableStoredSearch.js")"></script>
+        <script type="text/javascript" src="$content.getURI("scripts/yui/xnat_loader.js")"></script>
+        <!-- BEGIN SET AND PARSE SUMMARY TABS -->
+        #addCustomScreens($om.getXSIType() "report/preContent")
+        #set($summary_tabs=$turbineUtils.getTemplateName("_summary_tabs","xnat:projectData",$project.getId()))
+        #parse($turbineUtils.getTemplateName("_summary_tabs","xnat:projectData",$project.getId()))
+        <!-- END SET AND PARSE SUMMARY TABS -->
+
+        #parse($turbineUtils.getTemplateName("_actions_box","xnat:projectData",$project.getId()))
+
+        <div class="clear"></div>
+        <br>
+
+        #addCustomScreens($om.getXSIType() "report/preData")
+
+        <div id="activeWorkflows" class="report-info-block">
+            <h3>$displayManager.getPluralDisplayNameForSubject() with Active Workflows</h3>
+            <table class="xnat-table">
+                <thead>
+                <tr>
+                    <th>$displayManager.getSingularDisplayNameForSubject() Name</th>
+                    <th>Active $displayManager.getSingularDisplayNameForMRSession()</th>
+                    <th>$displayManager.getSingularDisplayNameForMRSession() Date</th>
+                    <th>Processing Log</th>
+                    <th>Output to PACS</th>
+                    #if($user.canEdit($item))
+                        <th>TIP Status</th>
+                    #end
+                </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+
+            <form id="setActivePatientForm">
+                <input type="hidden" name="xnat:experimentData/fields/field[name=activeintip]/field" value="false" />
+            </form>
+        </div>
+        <script type="text/javascript" src="/scripts/tip/tipStatus.js"></script>
+        <script type="text/javascript" src="/scripts/tip/tipWorkflowDisplay.js"></script>
+        #if($siteConfig.getProperty("tipStatusSearchId","")!="undefined")
+            #set($tipStatusSearchId = $siteConfig.getProperty("tipStatusSearchId",""))
+            <script type="text/javascript">
+                var userEditable = #if($user.canEdit($item)) true #else false #end;
+                TIP.workflowDisplay("$tipStatusSearchId","activeWorkflows","$project.getId()",userEditable);
+            </script>
+        #end
+
+
+
+        #parse($turbineUtils.getTemplateName("_bundle_tabs","xnat:projectData",$project.getId()))
+
+        #addCustomScreens($om.getXSIType() "report/postData")
+
     #else
-        <tr>
-            <td valign="top" width="680">
-                <h3 class="edit_header1" style="">$!item.getStringProperty("xnat:projectData/name")</h3>
+        <!--can't read data-->
 
-                <script type="text/javascript" src="$content.getURI("scripts/yui/build/resize/resize-beta-min.js")"></script>
-                <script type="text/javascript" src="$content.getURI("scripts/yui/build/layout/layout-beta-min.js")"></script>
+        #parse($turbineUtils.getTemplateName("_summary_tabs","xnat:projectData",$project.getId()))
 
-                <script type="text/javascript" src="$content.getURI("scripts/generated/xdat_stored_search.js")"></script>
-                <script type="text/javascript" src="$content.getURI("scripts/generated/xdat_search_field.js")"></script>
-                <script type="text/javascript" src="$content.getURI("scripts/generated/xdat_criteria.js")"></script>
-                <script type="text/javascript" src="$content.getURI("scripts/generated/xdat_criteria_set.js")"></script>
-                <script type="text/javascript" src="$content.getURI("scripts/search/tabManager.js")"></script>
-                <script type="text/javascript" src="$content.getURI("scripts/search/saveSearch.js")"></script>
-                <script type="text/javascript" src="$content.getURI("scripts/search/searchManager.js")"></script>
-                <script type="text/javascript" src="$content.getURI("scripts/search/dataTableSearch.js")"></script>
-                <script type="text/javascript" src="$content.getURI("scripts/search/dataTableStoredSearch.js")"></script>
-                <script type="text/javascript" src="$content.getURI("scripts/yui/xnat_loader.js")"></script>
-                <!-- BEGIN SET AND PARSE SUMMARY TABS -->
-                #addCustomScreens($om.getXSIType() "report/preContent")
-                #set($summary_tabs=$turbineUtils.getTemplateName("_summary_tabs","xnat:projectData",$project.getId()))
-                #parse($turbineUtils.getTemplateName("_summary_tabs","xnat:projectData",$project.getId()))
-                <!-- END SET AND PARSE SUMMARY TABS -->
-            </td>
-            ##if($data.getSession().getAttribute("user").checkRole("Administrator"))
-            #if(!$user.checkFeature($om,"hide_actions_project") || $user.checkRole("Administrator"))
-            <td valign="top" width="120" align="left">
-                #parse($turbineUtils.getTemplateName("_actions_box","xnat:projectData",$project.getId()))
-            </td>
-            #end
-        </tr>
-            #addCustomScreens($om.getXSIType() "report/preData")
-        <tr>
-            <td colspan="2">
-                <div id="activeWorkflows" class="report-info-block">
-                    <h3>$displayManager.getPluralDisplayNameForSubject() with Active Workflows</h3>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>$displayManager.getSingularDisplayNameForSubject() Name</th>
-                                <th>Active $displayManager.getSingularDisplayNameForMRSession()</th>
-                                <th>$displayManager.getSingularDisplayNameForMRSession() Date</th>
-                                <th>Processing Log</th>
-                                <th>Output to PACS</th>
-                                #if($user.canEdit($item))
-                                    <th>TIP Status</th>
-                                #end
-                            </tr>
-                        </thead>
-                        <tbody>
-
-                        </tbody>
-                    </table>
-
-                    <form id="setActivePatientForm">
-                        <input type="hidden" name="xnat:experimentData/fields/field[name=activeintip]/field" value="false" />
-                    </form>
-                </div>
-                <script type="text/javascript" src="/scripts/tip/tipStatus.js"></script>
-                <script type="text/javascript" src="/scripts/tip/tipWorkflowDisplay.js"></script>
-                #if($siteConfig.getProperty("tipStatusSearchId","")!="undefined")
-                    #set($tipStatusSearchId = $siteConfig.getProperty("tipStatusSearchId",""))
-                    <script type="text/javascript">
-                        var userEditable = #if($user.canEdit($item)) true #else false #end;
-                        TIP.workflowDisplay("$tipStatusSearchId","activeWorkflows","$project.getId()",userEditable);
-                    </script>
-                #end
-
-            </td>
-        </tr>
+        <div class="clearfix clear" style="margin-bottom: 2em"></div>
+        <div class="error">
+            <p><strong>Security Warning</strong></p>
+            <p>
+                Your account has not been granted access to this $displayManager.getSingularDisplayNameForProject().toLowerCase()'s data. If you would like to view this data, you will need to request access.
+                <a href="$link.setPage("RequestProjectAccess.vm").addPathInfo("project","$!{project.getId()}").addPathInfo("popup","$!popup")" class="btn1">
+                    #if($user.isGuest()) Log In And #end Request Access
+                </a>
+            </p>
+        </div>
 
 
-        <tr>
-            <td colspan="2">
-                #parse($turbineUtils.getTemplateName("_bundle_tabs","xnat:projectData",$project.getId()))
-
-                #addCustomScreens($om.getXSIType() "report/postData")
-
-            </td>
-        </tr>
     #end
-    </table>
 
     <!-- xmodal content for pipeline config screens -->
     <div id="beniceConfig" class="html-template existing" style="display:none;">

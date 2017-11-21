@@ -1,29 +1,31 @@
 <script type="text/javascript" src="$content.getURI("scripts/tip/qcImageSlider.js")"></script>
 
-<tr id="tip_status">
-    <td style="padding-bottom: 1em;">
-        <h3>TIP Status: <span id="tipStatusDisplay"></span>
-            #if($user.canEdit($item))
-                #if($user.checkRole("Fellow"))
+<div id="tip_status">
+    <h3>TIP Status: <span id="tipStatusDisplay"></span>
+        #if($item.canEdit($user))
+            ##if($user.checkRole("Fellow"))
 
-                #else
-                    <span style="margin-left: 10px;">
-                        <button id="tipStatusButton" class="btn btn-xs" onclick="TIP.setStatus(this,'setStatusForm')" data-currentStatus="" data-projectId="$project" data-subjectId="$subject.getId()" data-sessionId="$om.getId()">
-                            <span class="icon icon-xs icon-check-blue"></span> Set TIP Status
-                        </button>
-                    </span>
-                #end
-            #end
-        </h3>
-        <form id="setStatusForm">
-            <input type="hidden" name="xnat:experimentData/fields/field[name=activeintip]/field" id="tipStatusField" value="true" />
-        </form>
-    </td>
-</tr>
-<tr id="tip_qc_resource_summary" style="display: none;" >
+            ##else
+            <span style="margin-left: 10px;">
+                <button id="tipStatusButton" class="btn btn-xs" onclick="TIP.setStatus(this,'setStatusForm')" data-currentStatus="" data-projectId="$project" data-subjectId="$subject.getId()" data-sessionId="$om.getId()">
+                    <span class="fa fa-check"></span> Set TIP Status
+                </button>
+            </span>
+            ##end
+        #else
+            <span style="margin-left: 10px">
+                You cannot edit this item from here
+            </span>
+        #end
+    </h3>
+    <form id="setStatusForm">
+        <input type="hidden" name="xnat:experimentData/fields/field[name=activeintip]/field" id="tipStatusField" value="true" />
+    </form>
+</div>
+<div id="tip_qc_resource_summary" style="display: none;" >
     <td class="report-info-block">
         <h3>Processing History</h3>
-        <table>
+        <table class="xnat-table">
             <thead>
             <tr>
                 <th>Processing Output</th>
@@ -38,7 +40,7 @@
         <div id="rsn_qc_launcher"></div>
         <div id="fs_qc_launcher"></div>
     </td>
-</tr>
+</div>
 
 <script src="/scripts/tip/tipStatus.js"></script>
 <script>
@@ -49,10 +51,10 @@
         row = '<tr id="'+ workflowId + '"><td>' + rowData.assessorName + '</td>';
         row += '<td>'+ rowData.assessorDate +'</td>';
         row += '<td>'+ rowData.action + '</td></tr>';
-        jq('#tip_qc_resource_summary').find('table').find('tbody').append(row);
+        $('#tip_qc_resource_summary').find('table').find('tbody').append(row);
     }
 
-    jq.get("/data/archive/experiments/"+sessionId+"?format=json")
+    XNAT.xhr.get("/data/archive/experiments/"+sessionId+"?format=json")
         .success(function(data){
             var sessionChildren = data.items[0].children, resources = [], assessors = [], fields=[], assessorId, assessorDate, assessorChildren, assessorName, assessorQc, row, tipStatus, tipStatusNotes, qcItems = [], qcObjects = {};
 
@@ -74,20 +76,20 @@
                 if (fields[i].data_fields.name === "activeintip") {
                     tipStatus = fields[i].data_fields.field;
                     var tipStatusDisplay = (tipStatus === 'true') ? "Active" : "Not Active";
-                    jq('#tipStatusDisplay').html(tipStatusDisplay);
-                    jq('#tipStatusButton').data('currentstatus',tipStatusDisplay);
+                    $('#tipStatusDisplay').html(tipStatusDisplay);
+                    $('#tipStatusButton').data('currentstatus',tipStatusDisplay);
                     if (tipStatus === "true") {
-                        jq('#tipStatusField').val('false');
-                        jq('#tip_status').find('button').html('<span class="icon icon-xs icon-check-blue"></span> Mark Session as Complete');
+                        $('#tipStatusField').val('false');
+                        $('#tip_status').find('button').html('<span class="fa fa-check"></span> Mark Session as Complete');
                     } else {
-                        jq('#tipStatusField').val('true');
-                        jq('#tip_status').find('button').html('<span class="icon icon-xs icon-add"></span>Add Session to Active Queue');
+                        $('#tipStatusField').val('true');
+                        $('#tip_status').find('button').html('<span class="fa fa-plus"></span> Add Session to Active Queue');
                     }
                 }
                 if (fields[i].data_fields.name === "tipstatusnotes") {
                     // if this field is returned in JSON results, it means that there is a value to display.
                     tipStatusNotes = fields[i].data_fields.field;
-                    jq('tr#tip_status').find('h3').after('<p><strong>TIP Status Notes: </strong>'+tipStatusNotes+'</p>');
+                    $('#tip_status').find('h3').after('<p><strong>TIP Status Notes: </strong>'+tipStatusNotes+'</p>');
                 }
             }
 
@@ -157,14 +159,17 @@
                 insertQcRow(qcObjects[qcItems[i]],qcItems[i]); 
             }
 
-            // only show QC Result link if a QC resource is found.
-            $('#tip_qc_resource_summary').show();
+            if (qcItems.length){
+                // only show QC Result link if a QC resource is found.
+                $('#tip_qc_resource_summary').show();
+            }
+
         });
 
     function beniceModal(resourceId){
         xmodal.loading.open({id:'beniceloader'});
         // first get the data
-        var getReport = jq.ajax({
+        var getReport = $.ajax({
             type: 'GET',
             url: '/data/archive/experiments/'+sessionId+'/resources/'+resourceId+'/files/QC/'+sessionLabel+'_qc.html?format=html'
         });
@@ -182,11 +187,11 @@
                 }
             });
 
-            jq('#rsnqcModal .body .inner').find("img").each(function(){
+            $('#rsnqcModal .body .inner').find("img").each(function(){
                 var qcurl = '/data/archive/experiments/'+sessionId+'/resources/'+resourceId+'/files/QC/';
                 var imgsrcarray = $(this).prop("src").split("/");
                 var imgurl = imgsrcarray[imgsrcarray.length-1]; // get file name from existing url string
-                jq(this).prop("src",qcurl+imgurl); // fix file paths to be relative to the session resource path
+                $(this).prop("src",qcurl+imgurl); // fix file paths to be relative to the session resource path
             });
 
         });

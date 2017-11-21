@@ -37,8 +37,8 @@ var TIP = getObject(TIP || {});
                             patientName = patientName.replace(' ', ', ');
 
                             var row = '<tr>';
-                            row += '<td class="workflowListingDetail"><h3 class="sessionLabel" style="font-weight: normal">' + patientName + '</h3></td>';
-                            row += '<td class="workflowListingDetail"><h3 class="sessionLabel"><a href="/data/archive/experiments/' + sessionMeta.id + '?format=html">' + sessionMeta.label + '</a></h3></td>';
+                            row += '<td class="workflowListingDetail">' + patientName + '</td>';
+                            row += '<td class="workflowListingDetail"><a href="/data/archive/experiments/' + sessionMeta.id + '?format=html">' + sessionMeta.label + '</a></td>';
                             row += '<td>' + sessionMeta.date + '</td>';
 
                             if (sessionResources && !sessionAssessors) {
@@ -100,7 +100,7 @@ var TIP = getObject(TIP || {});
                                         row += '</tr>';
                                         jq(workflowTable).append(row);
                                     } else {
-                                        row += '<td colspan="2"></td>';
+                                        row += '<td></td><td></td>';
                                         if (userEditable) {
                                             row += '<td><button id="set-' + sessionMeta.id + '" onclick="TIP.setStatus(this,\'setActivePatientForm\')" data-projectId="' + projectId + '" data-subjectId="' + sessionMeta.subject_ID + '" data-sessionId="' + sessionMeta.id + '">Mark Complete</button></td>';
                                         }
@@ -109,7 +109,7 @@ var TIP = getObject(TIP || {});
                                     }
                                 }
                             } else {
-                                row += '<td colspan="2"></td>';
+                                row += '<td></td><td></td>';
                                 if (userEditable) {
                                     row += '<td><button id="set-' + sessionMeta.id + '" onclick="TIP.setStatus(this,\'setActivePatientForm\')" data-projectId="' + projectId + '" data-subjectId="' + sessionMeta.subject_ID + '" data-sessionId="' + sessionMeta.id + '">Mark Complete</button></td>';
                                 }
@@ -150,8 +150,8 @@ var TIP = getObject(TIP || {});
                     patientName = patientName.replace(' ',', ');
 
                     var row = '<tr>';
-                    row += '<td class="workflowListingDetail"><h3 class="sessionLabel" style="font-weight: normal;">' + patientName + '</h3></td>';
-                    row += '<td class="workflowListingDetail"><h3 class="sessionLabel"><a href="/data/archive/experiments/' + sessionMeta.id + '?format=html">' + sessionMeta.label + '</a></h3></td>';
+                    row += '<td class="workflowListingDetail">' + patientName + '</td>';
+                    row += '<td class="workflowListingDetail"><a href="/data/archive/experiments/' + sessionMeta.id + '?format=html">' + sessionMeta.label + '</a></td>';
                     row += '<td>'+sessionMeta.date+'</td>';
                     row += '<td>'+sessionMeta.project+'</td>';
 
@@ -209,13 +209,13 @@ var TIP = getObject(TIP || {});
                             } else
 
                             {
-                                row += '<td colspan="2"></td>';
+                                row += '<td></td><td></td>';
                                 row += '</tr>';
                                 jq(workflowTable).append(row);
                             }
                         }
                     } else {
-                        row += '<td colspan="2"></td>';
+                        row += '<td></td><td></td>';
                         row += '</tr>';
                         jq(workflowTable).append(row);
                     }

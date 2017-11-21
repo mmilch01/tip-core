@@ -3,7 +3,7 @@
 
 <h2>Patients with Active Workflows</h2>
 <div id="activeWorkflows" class="report-info-block" style="margin-bottom: 4em;">
-    <table width="100%">
+    <table width="100%" class="xnat-table">
         <thead>
         <tr>
             <th>$displayManager.getSingularDisplayNameForSubject() Name</th>
