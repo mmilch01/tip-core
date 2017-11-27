@@ -21,18 +21,18 @@ tipSettingsPanel:
 
 siteSettings:
     kind: tabs
-    name: tipAdminPage
+    name: tipCoreAdminPage
     label: TIP Site Settings
     meta:
         tabGroups:
-            tipAdminTabGroup: TIP Admin
+            tipCoreTabGroup: TIP Core
     contains: tabs
     tabs:
-        tipAdminTab:
+        tipCoreTab:
             kind: tab
-            name: tipAdminTab
+            name: tipCoreTab
             label: TIP Site Setup
-            group: tipAdminTabGroup
+            group: tipCoreTabGroup
             active: true
             contents:
               ${tipSettingsPanel}
