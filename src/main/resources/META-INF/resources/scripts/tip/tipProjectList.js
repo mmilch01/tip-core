@@ -52,7 +52,7 @@ function MinProjectsList(_div, _options){
             params += "&accessible="+this.options.accessible;
         }
 
-        YAHOO.util.Connect.asyncRequest('GET',serverRoot +'/REST/projects?format=json&stamp='+ (new Date()).getTime() + params,this.initCallback,null,this);
+        YAHOO.util.Connect.asyncRequest('GET',XNAT.url.rootUrl('/REST/projects?format=json&stamp='+ (new Date()).getTime() + params),this.initCallback,null,this);
 
     };
 
@@ -168,20 +168,21 @@ function MinProjectsList(_div, _options){
 }
 
 function addSubjectInfo(pid,ppi,callback) {
-    $.getJSON(serverRoot +'/REST/projects/'+ pid +'/subjects?format=json')
-        .done(function(data){
+    XNAT.xhr.getJSON({
+        url: XNAT.url.rootUrl('/REST/projects/' + pid + '/subjects?format=json'),
+        success: function (data) {
             var subjectCounts = data.ResultSet.Result.length;
             if (subjectCounts > 0) {
                 var pid = data.ResultSet.Result[0].project;
-                subjectLine = '<strong>Patients</strong>: ' + subjectCounts;
+                var subjectLine = '<strong>Patients</strong>: ' + subjectCounts;
                 if (ppi != undefined && ppi != "") {
                     subjectLine += ' <strong style="padding-left: 20px;">PI: </strong>' + ppi;
                 }
-                $('#'+pid).html(subjectLine);
-                callback(subjectLine,pid);
+                $('#' + pid).html(subjectLine);
+                callback(subjectLine, pid);
             }
         }
-    );
+    });
 }
 
 function prependLoader(div_id,msg){

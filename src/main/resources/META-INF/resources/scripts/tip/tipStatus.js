@@ -17,16 +17,25 @@ var TIP = getObject(TIP || {});
             // xmodal.close();
 
             xmodal.loading.open();
-            $.ajax({ url: "/REST/projects/"+projectId+"/subjects/"+subjectId+"/experiments/"+sessionId+"?req_format=form&XNAT_CSRF="+csrfToken, type:"PUT", contentType: "application/x-www-form-urlencoded; charset=UTF-8", data: updateData })
-                .done(function(){
+            XNAT.xhr.ajax({
+                url: XNAT.url.csrfUrl("/REST/projects/" + projectId + "/subjects/" + subjectId + "/experiments/" + sessionId + "?req_format=form"),
+                type: "PUT",
+                contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+                data: updateData,
+                success: function () {
                     xmodal.loading.close();
-                    xmodal.message({content: "Session status updated.", okAction: function(){ xmodal.closeAll(); window.location.reload() } });
-                })
-                .fail(function(){
+                    xmodal.message({
+                        content: "Session status updated.", okAction: function () {
+                            xmodal.closeAll();
+                            window.location.reload()
+                        }
+                    });
+                },
+                fail: function (e) {
                     xmodal.loading.close();
-                    xmodal.alert("Sorry, this request failed for some reason.")
-                })
-                .always(function(){ });
+                    xmodal.alert("Sorry, this request failed. Reason: " + e.statusText)
+                }
+            })
         };
 
         if (!projectId || !subjectId || !sessionId || !updateData) {
@@ -68,11 +77,18 @@ var TIP = getObject(TIP || {});
 
         TIP.getSubjectId = function() {
             xmodal.loading.open();
-            $.getJSON("/REST/experiments/"+sessionId+"?format=json")
-                .success(function(data){
+            XNAT.xhr.getJSON({
+                url: XNAT.url.rootUrl("/REST/experiments/" + sessionId + "?format=json"),
+                success: function (data) {
+                    xmodal.loading.close();
                     subjectId = data.items[0].data_fields.subject_ID;
                     TIP.openValidationModal();
-                });
+                },
+                fail: function(e){
+                    xmodal.loading.close();
+                    xmodal.alert("Sorry, this request failed. Reason: " + e.statusText)
+                }
+            });
         };
 
         TIP.openValidationModal = function() {
@@ -92,21 +108,25 @@ var TIP = getObject(TIP || {});
 
         TIP.setValidationStatus.action = function() {
             xmodal.loading.open();
-            $.ajax({ url: "/REST/projects/"+projectId+"/subjects/"+subjectId+"/experiments/"+sessionId+"/assessors/"+assessorId+"?req_format=form&XNAT_CSRF="+csrfToken, type:"PUT", contentType: "application/x-www-form-urlencoded; charset=UTF-8", data: updateData })
-                .done(function(){
+            XNAT.xhr.ajax({
+                url: XNAT.url.csrfUrl("/REST/projects/" + projectId + "/subjects/" + subjectId + "/experiments/" + sessionId + "/assessors/" + assessorId + "?req_format=form"),
+                type: "PUT",
+                contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+                data: updateData,
+                success: function () {
                     xmodal.loading.close();
                     xmodal.message({
                         content: "QC status set to '" + validationStatus + "'.",
-                        okAction: function(obj){
+                        okAction: function (obj) {
                             xmodal.close(obj.$modal)
                         }
                     });
-                })
-                .fail(function(){
+                },
+                fail: function (e) {
                     xmodal.loading.close();
-                    xmodal.alert("Sorry, this request failed for some reason.")
-                })
-                .always(function(){ });
+                    xmodal.alert("Sorry, this request failed. Reason: " + e.statusText)
+                }
+            });
         };
 
         if (!projectId || !sessionId || !assessorId || !updateData) {
