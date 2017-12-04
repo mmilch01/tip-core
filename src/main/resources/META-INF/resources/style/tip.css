@@ -265,7 +265,8 @@ table.dataTable tr.disabled { color: #aaa; }
 .imageSlide .slideCounter { position: absolute; right: 0; }
 
 /* simulate xModal appearance in popup windows for pipelines. */
-body.popup.xmodal #layout_content { margin: 0; }
+body.xmodal #layout_content { margin: 0; }
+body.xmodal #xnat_power { display: none; }
 
 div.pipemodal { position: absolute; top: 0; left: 0; padding: 0 ; overflow: hidden ; background: #fff ; /* border-radius: 9px ; */ }
 div.pipemodal .title { position: relative ; height: 25px ; padding-left: 10px ; overflow: hidden ; font-size: 12px ; font-weight: normal ; line-height: 28px ; vertical-align: middle ; color: #333 ; background: /* #084FAB */ /* #206bc4 */ #f0f0f0 url('images/nav_bkdg.png') center center repeat-x ; border-bottom: 1px solid #c0c0c0 ; /* border-radius: 5px 5px 0 0 ; */ }
@@ -294,12 +295,19 @@ div.pipemodal .footer .button.hidden:hover, div.pipemodal .footer .button.disabl
 
 .pipemodal fieldset { background-color: #f0f0f0; border: 1px solid #ccc; margin: 1em 0; padding: 1em; }
 .pipemodal fieldset legend { border-radius: 3px; padding: 3px; background-color: inherit; }
-.pipemodal fieldset label { display: inline-block; font-weight: bold; min-width: 150px; padding-right: 10px; }
+.pipemodal fieldset label { display: inline-block; font-weight: bold; min-width: 100px; padding-right: 10px; }
 .pipemodal fieldset p { margin-bottom: 1em; }
 .pipemodal .label-container,
 .pipemodal .input-container,
 .pipemodal .helptext-container { display: inline-block; vertical-align: top; }
-.pipemodal .helptext-container { background: url(icons/icon-caret-lt-48.png) top left no-repeat; background-size: 16px 16px; color: #666; float: right; font-size: 11px; padding-left: 24px; width: 200px }
+.pipemodal .helptext-container { color: #666; float: right; font-size: 11px; padding-left: 24px; width: 200px }
+.pipemodal .helptext-container:before {
+    content: "\f0d9";
+    display: inline-block;
+    font-family: "FontAwesome";
+    margin-left: -10px;
+    width: 10px;
+}
 .pipemodal fieldset .col-2 label { min-width: 75px; }
 
 .pipemodal fieldset.error { background-color: #fffcc7; }
