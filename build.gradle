@@ -125,6 +125,7 @@ dependencyManagement.imports {
 }
 
 dependencies {
+    implementation "org.nrg.xnat:web:${vXnat}"
     implementation "org.nrg.xdat:core"
     implementation "org.nrg:framework"
     runtime "org.apache.xmlbeans:xmlbeans-xpath"
