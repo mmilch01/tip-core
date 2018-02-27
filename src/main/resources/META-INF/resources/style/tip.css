@@ -328,7 +328,9 @@ div.pipemodal .footer .buttons { position: absolute ; right: 0 ; }
 div.pipemodal .footer .buttons .textlink { font-size: 12px; padding: 0 8px; position: relative; top: 5px; }
 div.pipemodal .footer .button.default { font-weight: bold ; color: #fff ; background: #07428d url('images/btn1_30px.png') center top repeat-x ; border-color: #293d66 ; }
 */
-div.pipemodal.embedded { top: 0; left: 0; border: none; box-shadow: none; display: block; width: 100%; z-index: auto;  }
+div.pipemodal.embedded { top: 0; left: 0; border: none; box-shadow: none; display: block; width: 100%; max-width: 100%; max-height: 100%; z-index: auto;  }
+div.pipemodal.embedded .body .inner { display: block; }
+div.pipemodal.embedded .footer { position: absolute; padding: 0; }
 
 /* Avoid over-padding XNAT full-page content when displayed in a modal. */
 
