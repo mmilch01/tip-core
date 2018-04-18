@@ -2,18 +2,102 @@ var TIP = getObject(TIP || {});
 
 (function(){
 
-    TIP.workflowDisplay = function(searchId,workflowTableId,projectId,userEditable) {
-        var results;
-        var workflowTable = $('#'+workflowTableId+' table tbody');
+    var $container = $('#activeWorkflows');
 
-        var displayProjectWorkflow = function(){
-            var foundSubjectsInProject = false;
+    TIP.workflowDisplay = function(opts) {
+        var searchId = opts.searchId || false,
+            workflowTableId = opts.containerId || false,
+            projectId = opts.projectId || false,
+            userEditable = opts.userEditable || false,
+            userAdmin = opts.admin || false,
+            subjectTerm = opts.subjectTerm || 'Subject',
+            sessionTerm = opts.sessionTerm || 'MR Session',
+            projectTerm = opts.projectTerm || 'Project';
+
+        var workflowTable = function(results,userEditable){
+            // results: [ { patientName: '', sessionId: '', sessionLabel: '', sessionDate: '', workflowEntries: [ 'entry' ], subjectId: '', projectId: '' ]
+
+            var wkTable = new XNAT.table({
+                id: workflowTableId,
+                addClass: 'xnat-table',
+                style: { width: '100%' }
+            });
+
+            wkTable.tr()
+                .th({ addClass: 'workflowListingDetail' }, subjectTerm + ' Name')
+                .th({ addClass: 'workflowListingDetail' }, 'Active ' + sessionTerm)
+                .th(sessionTerm + ' Date')
+                .th({ addClass: 'projectCol' }, projectTerm)
+                .th('Processing Log')
+                .th('Output to PACS')
+                .th({ addClass: 'tipActions' }, 'TIP Status');
+
+            if (results.length) {
+                results.forEach(function(result){
+                    wkTable.tr()
+                        .td( result.patientName )
+                        .td([ showSessionLink(result) ])
+                        .td( result.sessionDate )
+                        .td({ addClass: 'projectCol' }, result.projectId)
+                        .td([ showProcessLog(result.workflowEntries) ])
+                        .td({ addClass: 'tipActions' },[ showTipActions(userEditable, result) ])
+
+                })
+            }
+            else {
+                wkTable.tr()
+                    .td({ colspan: 7 }, 'No active workflows found');
+            }
+
+            function showSessionLink(id,label){
+                return spawn('a',{
+                    href: XNAT.url.rootUrl('/data/experiments/'+id+'?format=html'),
+                    style: { 'font-weight': 'bold' },
+                    html: label
+                })
+            }
+            function showProcessLog(entries){
+                if (entries.length) {
+                    var log = [];
+                    entries.forEach(function(entry){
+                        log.push(spawn('p',entry))
+                    });
+                    return spawn('!',log)
+                }
+            }
+            function showTipActions(result){
+                return spawn('button', {
+                    id: 'set-'+result.sessionId,
+                    onclick: TIP.setStatus(this, 'setActivePatientForm'),
+                    data: {
+                        currentStatus: 'active',
+                        projectId: result.projectId,
+                        subjectId: result.subjectId,
+                        sessionId: result.sessionId
+                    },
+                    html: 'Mark Complete'
+                })
+            }
+
+            return wkTable.table;
+
+        };
+
+        var displayProjectWorkflow = function(results){
+            var formattedResults = [];
+
+            results.forEach(function(result){
+                if (result.project === projectId) {
+                    // get all benice and freesurfer results from a single stored search.
+
+
+                }
+            });
             for (var i= 0, j=results.length; i<j; i++ ){
                 if (results[i].project == projectId) {
 
                     foundSubjectsInProject = true;
 
-                    var reqUrl = XNAT.url.csrfUrl("/data/projects/"+projectId+"/subjects/"+results[i].xnat_subjectdata_subjectid+"/experiments/"+results[i].session_id+"?format=json");
                     XNAT.xhr.getJSON(reqUrl)
                         .success(function(data) {
                             var sessionResources, sessionAssessors, sessionScans, sessionCustomFields,
@@ -121,9 +205,6 @@ var TIP = getObject(TIP || {});
                 }
             }
 
-            if (!foundSubjectsInProject) {
-                $(workflowTable).append("<tr><td colspan='6'><p>No active patients found in this project</p></td></tr>");
-            }
         };
 
         var displayAllWorkflow = function(){
@@ -228,23 +309,37 @@ var TIP = getObject(TIP || {});
             XNAT.xhr.getJSON({
                 url: XNAT.url.rootUrl('/data/search/saved/' + searchId + '/results?format=json'),
                 success: function (data) {
-                    results = data.ResultSet.Result;
-                    if ((results.length > 0) && (projectId)) {
-                        displayProjectWorkflow();
-                    } else if (results.length > 0) {
-                        displayAllWorkflow();
+
+                    var rawResults = data.ResultSet.Result;
+                    if ((rawResults.length > 0) && (projectId)) {
+                        displayProjectWorkflow(rawResults);
+                    } else if (rawResults.length > 0) {
+                        displayAllWorkflow(rawResults);
                     } else {
-                        $(workflowTable).append('<tr><td colspan="6"><p>No active patients found</p></td></tr>');
+                        $container.append( spawn('p','No active patients found') );
                     }
                 },
                 fail: function (e) {
-                    $(workflowTable).append('<tr><td colspan="6"><p>An error occurred.</p></td></tr>');
-                    console.log(e)
+                    var msg = 'An error occurred while looking up active workflows. ' + (userAdmin) ? '' : 'Please contact a site administrator.';
+                    $container.append(spawn('p',msg));
+                    console.log("Error found in search ID: "+ searchId);
+                    console.log(e);
                 }
             });
         };
 
-        queryWorkflow();
+        if (searchId) {
+            $container.append( spawn('h2','Patients with Active Workflows') );
+
+            queryWorkflow();
+        }
+        else {
+            var msg = '<strong>TIP Setup:</strong> Workflow Display has not been enabled on this site.';
+            if (userAdmin) {
+                msg += 'To enable this feature, go to <code>Administer > Plugin Settings > TIP Site Setup</code> and enter the stored search ID related to your workflows.'
+            }
+            $container.append(spawn('div.note', msg ));
+        }
     }
 })();
 

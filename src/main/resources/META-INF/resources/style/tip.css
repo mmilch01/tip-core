@@ -201,7 +201,7 @@ label.disabled { color: #a0a0a0; font-weight: normal; }
 /* Custom report styles for TIP */
 
 .report-info-block .workflowListingDetail p,
-.report-info-block .workflowEntry p { font-size: 11px; text-transform: uppercase; margin-bottom: 4px; }
+.report-info-block .workflowEntry p { font-size: 11px; text-transform: uppercase; margin: 0; }
 .report-info-block .workflowListingDetail h3 { margin: 4px 0; }
 .workflowListingDetail a { font-weight: bold; }
 
@@ -232,7 +232,7 @@ table.dataTable tr.disabled { color: #aaa; }
 .imageSlide.active { display: block; }
 
 .imageSliderControls {
-    height: 48px;
+    height: 42px;
     opacity: .3;
     position: absolute;
     top: 50%;
@@ -240,24 +240,37 @@ table.dataTable tr.disabled { color: #aaa; }
 }
 .imageSliderControls:hover { opacity: .8; }
 
-.imageSliderControls .slideRight {
-    background: url(icons/icon-arrow-rt-48.png) 0 0 no-repeat;
-    display: inline-block;
-    height: 48px;
-    margin-top: -24px;
-    position: absolute;
-    right: 10px;
-    width: 48px;
-}
-
+.imageSliderControls .slideRight,
 .imageSliderControls .slideLeft {
-    background: url(icons/icon-arrow-lt-48.png) 0 0 no-repeat;
+    background: rgba(63,152,211,1);
+    border-radius: 24px;
+    color: #fff;
     display: inline-block;
-    height: 48px;
-    margin-top: -24px;
+    font-family: "FontAwesome";
+    font-size: 21pt;
+    height: 42px;
+    margin-top: -21px;
     position: absolute;
+    text-align: center;
+    width: 42px;
+}
+.imageSliderControls .slideRight {
+    right: 16px;
+}
+.imageSliderControls .slideLeft {
     left: 10px;
-    width: 48px;
+}
+.imageSliderControls .slideRight:before {
+    content: "\f054";
+    position: absolute;
+    left: 14px;
+    top: 14px;
+}
+.imageSliderControls .slideLeft:before {
+    content: "\f053";
+    position: absolute;
+    right: 14px;
+    top: 14px;
 }
 
 .imageSlide .slideTitleBar { padding: 3px 0; position: relative; }
@@ -333,4 +346,5 @@ div.xmodal.pipemodal .footer .buttons { position: absolute ; right: 0 ; }
 /* Avoid over-padding XNAT full-page content when displayed in a modal. */
 
 .xmodal .inner #layout_content { margin: 0; }
+
 
