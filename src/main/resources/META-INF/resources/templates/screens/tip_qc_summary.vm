@@ -7,7 +7,7 @@
 
             ##else
             <span style="margin-left: 10px;">
-                <button id="tipStatusButton" class="btn btn-xs" onclick="TIP.setStatus(this,'setStatusForm')" data-currentStatus="" data-projectId="$project" data-subjectId="$subject.getId()" data-sessionId="$om.getId()">
+                <button id="tipStatusButton" class="btn btn-xs" onclick="TIP.setStatus(this,'setStatusForm')" data-current-status="" data-project-id="$project" data-subject-id="$subject.getId()" data-session-id="$om.getId()">
                     <span class="fa fa-check"></span> Set TIP Status
                 </button>
             </span>
