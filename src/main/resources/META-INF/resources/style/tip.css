@@ -200,9 +200,11 @@ label.disabled { color: #a0a0a0; font-weight: normal; }
 
 /* Custom report styles for TIP */
 
-.report-info-block .workflowListingDetail p,
-.report-info-block .workflowEntry p { font-size: 11px; text-transform: uppercase; margin: 0; }
-.report-info-block .workflowListingDetail h3 { margin: 4px 0; }
+#activeWorkflows { margin: 4em 0; }
+
+.workflowListingDetail p,
+.workflowEntry p { font-size: 11px; text-transform: uppercase; margin: 0; }
+.workflowListingDetail h3 { margin: 4px 0; }
 .workflowListingDetail a { font-weight: bold; }
 
 #workflow_messages { margin-bottom: 1em; }

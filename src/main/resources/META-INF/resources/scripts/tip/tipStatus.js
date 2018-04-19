@@ -1,13 +1,15 @@
+console.log('tipStatus.js');
+
 var TIP = getObject(TIP || {});
 
 (function(){
     TIP.setStatus = function(clicked,formID) {
-        var projectId = $(clicked).data('projectid');
-        var subjectId = $(clicked).data('subjectid');
-        var sessionId = $(clicked).data('sessionid');
+        var projectId = $(clicked).data('project-id');
+        var subjectId = $(clicked).data('subject-id');
+        var sessionId = $(clicked).data('session-id');
         var statusForm = document.getElementById(formID);
         var updateData = $(statusForm).serialize();
-        var currentStatus = $(clicked).data('currentstatus');
+        var currentStatus = $(clicked).data('current-status');
         var modalHeight = 200;
 
         TIP.setStatus.action = function(obj) {

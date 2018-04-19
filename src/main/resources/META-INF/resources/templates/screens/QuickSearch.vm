@@ -1,39 +1,19 @@
 <!-- QuickSearch -->
 <script src="/scripts/tip/tipWorkflowDisplay.js"></script>
 
-<div id="activeWorkflows" class="report-info-block" style="margin-bottom: 4em;">
-    <table width="100%" class="xnat-table">
-        <thead>
-        <tr>
-            <th> Name</th>
-            <th>Active </th>
-            <th> Date</th>
-            <th>Project</th></th>
-            <th>Processing Log</th>
-            <th>Output to PACS</th>
-        </tr>
-        </thead>
-        <tbody>
-
-        </tbody>
-    </table>
-##
-##    <form id="setActivePatientForm">
-##        <input type="hidden" name="xnat:experimentData/fields/field[name=activeintip]/field" value="false" />
-##    </form>
-</div>
+<div id="activeWorkflows"></div>
 
 #if($siteConfig.getProperty("tipStatusSearchId","")!="undefined")
     #set($tipStatusSearchId = $siteConfig.getProperty("tipStatusSearchId",""))
 <script type="text/javascript">
-    var opts = {
-        searchId: "$tipStatusSearchId",
-        containerId: "activeWorkflows",
-        admin: "$turbineUtils.isSiteAdmin($user)",
-        subjectTerm: "$displayManager.getSingularDisplayNameForSubject()",
-        sessionTerm: "$displayManager.getSingularDisplayNameForMRSession()"
-    }
-    TIP.workflowDisplay(opts);
+    $(document).ready(function(){
+        var opts = {
+            searchId: "$tipStatusSearchId",
+            containerId: "activeWorkflows",
+            admin: $turbineUtils.isSiteAdmin($user),
+        }
+        TIP.workflowDisplay(opts);
+    });
 </script>
 #end
 

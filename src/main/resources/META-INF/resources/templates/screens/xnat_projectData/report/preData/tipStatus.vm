@@ -1,0 +1,19 @@
+<div id="activeWorkflows"></div>
+
+<script type="text/javascript" src="/scripts/tip/tipStatus.js"></script>
+<script type="text/javascript" src="/scripts/tip/tipWorkflowDisplay.js"></script>
+
+#if($siteConfig.getProperty("tipStatusSearchId","")!="undefined")
+    #set($tipStatusSearchId = $siteConfig.getProperty("tipStatusSearchId",""))
+<script type="text/javascript">
+    var userEditable = #if($item.canEdit($user)) true #else false #end;
+    var opts = {
+        searchId: "$tipStatusSearchId",
+        containerId: "activeWorkflows",
+        admin: "$turbineUtils.isSiteAdmin($user)",
+        userEditable: userEditable,
+        projectId: "$project.getId()"
+    }
+    TIP.workflowDisplay(opts);
+</script>
+#end
