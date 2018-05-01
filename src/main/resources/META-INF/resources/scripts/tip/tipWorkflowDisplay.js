@@ -22,17 +22,19 @@ var TIP = getObject(TIP || {});
 
             var wkTable = new XNAT.table({
                 id: 'active-workflow-table',
-                addClass: 'xnat-table',
+                addClass: 'xnat-table banded',
                 style: { width: '100%' }
             });
 
-            wkTable.tr()
+            wkTable.thead().tr()
                 .th({ addClass: 'workflowListingDetail' }, subjectTerm + ' Name')
                 .th({ addClass: 'workflowListingDetail' }, 'Active ' + sessionTerm)
                 .th(sessionTerm + ' Date')
                 .th({ addClass: 'projectCol' }, projectTerm)
                 .th('Processing Log')
                 .th({ addClass: 'tipActions hidden' }, 'TIP Status');
+
+            wkTable.tbody();
 
             if (results.length) {
                 results.forEach(function(result){
