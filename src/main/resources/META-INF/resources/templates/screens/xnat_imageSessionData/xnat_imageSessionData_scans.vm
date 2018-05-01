@@ -47,7 +47,14 @@
             </td>
             <td border=0 align=left NOWRAP>$!scan.getProperty("type")</td>
             #if($siteConfig.uiDisplaySeriesDescription)
-                <td border=0 align=left NOWRAP>$!scan.getProperty("parameters.sequence")</td>
+                <td border=0 align=left NOWRAP>
+                    #set($scanType = $!scan.xSIType)
+                    #if($scanType == "xnat:mrScanData")
+                        $!scan.getProperty("parameters.sequence")
+                    #else
+##                        $!scan.getType()
+                    #end
+                </td>
             #end
             <td>
                 $!scan.getProperty("meta/insert_date")
