@@ -126,11 +126,7 @@ function MinProjectsList(_div, _options){
                 if(p.project_access && p.project_access.toLowerCase()=="public") {
                     accessIcon.innerHTML += (' guest');
                 } else {
-                    accessIcon.innerHTML+='<a href="javascript:XNAT.projectAccess.requestAccess(\"'+p.id+'\")"><button class="btn btn-xs">Request access</button></a>';
-
-                    + "<a href='" + serverRoot + "/app/template/RequestProjectAccess.vm/project/" + p.id + "'>Request write access</a> to this " + XNAT.app.displayNames.singular.project.toLowerCase() + ".";
-
-                    + "<a href='javascript:XNAT.projectAccess.requestAccess(\""+p.id+"\")'><button class=\"btn btn-xs\">Request access</button></a>";
+                    accessIcon.innerHTML+='<a href="javascript:XNAT.projectAccess.requestAccess(\''+p.id+'\')"><button class="btn btn-xs">Request access</button></a>';
                 }
             }
             projDisplay.appendChild(accessIcon);
