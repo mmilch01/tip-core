@@ -33,6 +33,5 @@ siteSettings:
             name: tipCoreTab
             label: TIP Site Setup
             group: tipCoreTabGroup
-            active: true
             contents:
               ${tipSettingsPanel}

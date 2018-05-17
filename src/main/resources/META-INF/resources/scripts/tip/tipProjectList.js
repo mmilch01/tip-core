@@ -192,17 +192,3 @@ function prependLoader(div_id,msg){
     div.parentNode.insertBefore(loader_div,div);
     return new XNATLoadingGIF(loader_div);
 }
-
-TIP.app = TIP.app || {};
-
-TIP.app.requestProjectAccess = function(clicked){
-    // gets parameters from clicked button and launches project access request modal.
-    var projID = $(clicked).data('projectid');
-    var projName = $(clicked).data('projectname');
-    var modalContent = '<h3>Request Access to '+ projName +'</h3>';
-        modalContent += '<p>Upon submission of this form an email will be sent to the project manager.  The manager will be asked to give you access to this project.  Once the manager approves or denies your access, an email will be sent to you.</p>';
-        modalContent += '<p><label for="access_level">Access Level Requested: </label><select name="access_level"><option value="owner">Owner</option><option value="member">Member</option><option value="Collaborator">Collaborator</option></select></p>';
-        modalContent += '<p><label for="comments">Comments: </label><textarea rows="3" cols="10"></textarea></p>';
-
-
-};
