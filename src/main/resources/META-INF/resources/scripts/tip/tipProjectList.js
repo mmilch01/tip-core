@@ -96,7 +96,7 @@ function MinProjectsList(_div, _options){
 
             var p = projects[pC];
 
-            var project_name = p.name;
+            var project_name = escapeHtml(p.name);
 
             // if there are no spaces in the first 42 characters, then chop it off
             if (project_name.length > 42 && project_name.substring(0,41).indexOf(' ') === -1){
@@ -172,7 +172,7 @@ function addSubjectInfo(pid,ppi,callback) {
                 var pid = data.ResultSet.Result[0].project;
                 var subjectLine = '<strong>Patients</strong>: ' + subjectCounts;
                 if (ppi != undefined && ppi != "") {
-                    subjectLine += ' <strong style="padding-left: 20px;">PI: </strong>' + ppi;
+                    subjectLine += ' <strong style="padding-left: 20px;">PI: </strong>' + escapeHtml(ppi);
                 }
                 $('#' + pid).html(subjectLine);
                 callback(subjectLine, pid);

@@ -2,5 +2,5 @@
 <!-- Home/Default -->
 <li><a href="$link.setPage("ReportIssue.vm")">Report a Problem</a></li>
 #if ($user.checkRole("Fellow")) #else
-<li><a href="http://wiki.xnat.org" target="_blank">Documentation</a></li>
+<li><a href="https://wiki.xnat.org/documentation" target="_blank">Documentation</a></li>
 #end
