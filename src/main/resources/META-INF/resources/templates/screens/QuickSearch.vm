@@ -39,5 +39,7 @@
             #parse("/screens/recentExptList.vm")
         </div>
     </div>
+
+    <div class="clear"></div>
 </div>
 <!-- /QuickSearch -->
