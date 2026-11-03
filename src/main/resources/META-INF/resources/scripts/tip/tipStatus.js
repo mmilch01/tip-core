@@ -15,7 +15,7 @@ var TIP = getObject(TIP || {});
         TIP.setStatus.action = function(obj) {
             // get value from modal notes field, if it exists
             var tipStatusNotes = $(obj.$modal).find('.tipStatusNotesField').val();
-            if (tipStatusNotes) updateData += '&xnat%3AexperimentData%2Ffields%2Ffield%5Bname%3Dtipstatusnotes%5D%2Ffield='+tipStatusNotes;
+            if (tipStatusNotes) updateData += '&' + $.param({'xnat:experimentData/fields/field[name=tipstatusnotes]/field':tipStatusNotes});
             // xmodal.close();
 
             xmodal.loading.open();
@@ -67,7 +67,6 @@ var TIP = getObject(TIP || {});
 
     TIP.setValidationStatus = function(clicked,formID) {
         // store value of status in the form
-        $('#tipStatusField').val(validationStatus);
 
         var projectId = $(clicked).data('projectid');
         var subjectId = $(clicked).data('subjectid');
@@ -75,6 +74,7 @@ var TIP = getObject(TIP || {});
         var assessorId = $(clicked).data('assessorid');
         var validationStatus = $(clicked).data('status');
         var statusForm = document.getElementById(formID);
+        $(statusForm).find('#tipStatusField').val(validationStatus);
         var updateData = $(statusForm).serialize();
 
         TIP.getSubjectId = function() {
@@ -102,7 +102,7 @@ var TIP = getObject(TIP || {});
                 cancelLabel: "Cancel",
                 cancelAction: "return",
                 okAction: function() {
-                    updateData += '&tip%3AbeniceQC%2Fvalidation%2Fnotes=' + $('#validationNotesInput').html();
+                updateData += '&' + $.param({'tip:beniceQC/validation/notes': $('#validationNotesInput').val()});
                     TIP.setValidationStatus.action();
                 }
             });
