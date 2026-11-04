@@ -77,7 +77,7 @@
                     tipStatus = fields[i].data_fields.field;
                     var tipStatusDisplay = (tipStatus === 'true') ? "Active" : "Not Active";
                     $('#tipStatusDisplay').html(tipStatusDisplay);
-                    $('#tipStatusButton').data('currentstatus',tipStatusDisplay);
+                    $('#tipStatusButton').data('current-status',tipStatusDisplay);
                     if (tipStatus === "true") {
                         $('#tipStatusField').val('false');
                         $('#tip_status').find('button').html('<span class="fa fa-check"></span> Mark Session as Complete');

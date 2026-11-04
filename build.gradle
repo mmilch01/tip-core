@@ -124,6 +124,12 @@ dependencyManagement.imports {
     mavenBom "org.nrg:parent:${vXnat}"
 }
 
+// Exclude obsolete transitive artifacts, as in the XNAT 1.8.10.6 build.
+configurations.all {
+    exclude group: 'javax.sql', module: 'jdbc-stdext'
+    exclude group: 'javax.transaction', module: 'jta'
+}
+
 dependencies {
     implementation "org.nrg.xnat:web:${vXnat}"
     implementation "org.nrg.xdat:core"
