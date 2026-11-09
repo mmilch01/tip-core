@@ -23,11 +23,9 @@ siteSettings:
     kind: tabs
     name: tipCoreAdminPage
     label: TIP Site Settings
-    meta:
-        tabGroups:
-            tipCoreTabGroup: TIP Core
-    contains: tabs
-    tabs:
+    groups:
+        tipCoreTabGroup: TIP Core
+    contents:
         tipCoreTab:
             kind: tab
             name: tipCoreTab
